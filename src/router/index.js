@@ -1,15 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
+import Bills from '@/components/Bills'
 
 Vue.use(Router)
+Vue.filter('currency', function (value) {
+  return 'R$ ' + value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+})
+
+Vue.filter('date', function (value) {
+  let date = new Date(value)
+  return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+})
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: 'Bills',
+      component: Bills
     }
   ]
 })
