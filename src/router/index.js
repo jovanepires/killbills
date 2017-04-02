@@ -8,8 +8,8 @@ Vue.filter('currency', function (value) {
 })
 
 Vue.filter('date', function (value) {
-  let date = new Date(value)
-  return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+  let date = new Date(value.replace(/-/g, '/').replace(/T.+/, ''))
+  return date.getDate() + '/' + (date.getMonth() + 1)
 })
 
 export default new Router({

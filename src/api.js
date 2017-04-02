@@ -1,5 +1,17 @@
 const items = [
   {
+    'title': 'F3M',
+    'description': 'Salário',
+    'value': 1400.0,
+    'currency': 'BRL',
+    'resource': 'cc_itau',
+    'date': '2017-02-25T00:00:00Z',
+    'due': '2017-02-25T00:00:00Z',
+    'tags': [
+      'salario'
+    ]
+  },
+  {
     'title': 'MEGA IMOVEIS',
     'description': 'Aluguel',
     'value': -504.0,
