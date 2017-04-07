@@ -1,7 +1,7 @@
 <template>
   <section class="main bills">
 
-    <header :class="activeClass">
+    <header :class="activeClass" class="row">
       <div class="header-content">
         <span>{{ total | currency }}</span>
       </div>
@@ -12,15 +12,11 @@
       </div>
     </header>
 
-    <div class="scroll-list">
-      <div class="scroll-list-item" v-for="item in recipes">
-        <div class="scroll-list-item-content">
-          <div class="scroll-list-item-content-inner">
-            <div class="date">{{ item.date | date }}</div>
-            <div class="title">{{ item.title }}</div>
-            <div class="value">{{ item.value | currency }}</div>
-          </div>
-        </div>
+    <div class="scroll-list list-group row">
+      <div class="scroll-list-item list-group-item" v-for="item in recipes">
+        <div class="date col-2">{{ item.date | date }}</div>
+        <div class="title col-6">{{ item.title }}</div>
+        <div class="value col-4">{{ item.value | currency }}</div>
       </div>
     </div>
 
@@ -40,6 +36,9 @@
 <script>
 
 import { getBills } from '../api'
+
+import 'mdbootstrap/css/bootstrap.css'
+import 'mdbootstrap/css/mdb.css'
 
 export default {
   name: 'bills',
@@ -97,8 +96,6 @@ export default {
   .bills header {
     text-align: center;
     color: #fff;
-    padding: 20px 0;
-    margin: 0;
     border-bottom: 1px solid #ededed;
   }
   .bills header.positive {
@@ -108,9 +105,9 @@ export default {
     background: #e74c3c;
   }
   .header-title {
-    margin: 0;
     outline: none;
     position: relative;
+    margin: 0 auto;
   }
   .header-title-inner {
     line-height: 20px;
@@ -121,8 +118,10 @@ export default {
     font-size: 25px;
     padding-top: 20px;
     position: relative;
+    margin: 0 auto;
+    width: 100%;
   }
-  .scroll-list {
+  /*.scroll-list {
     margin: 0;
     padding: 0;
   }
@@ -148,7 +147,6 @@ export default {
     height: 28px;
     margin: -4px 0;
     position: relative;
-    width: 98px;
     align-items: center;
     -webkit-align-items: center;
     display: -webkit-flex;
@@ -162,17 +160,15 @@ export default {
   }
   .scroll-list-item-content-inner .title {
     display: inline-block;
-    width: 294px;
   }
   .scroll-list-item-content-inner .value {
     display: flex;
     margin: 0 24px 0 8px;
     min-width: 0;
-    width: 0;
     word-wrap: break-word;
     -webkit-flex: 1;
     flex: 1;
-  }
+  }*/
   .bills footer {
     text-align: right;
   }

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container-fluid">
     <router-view></router-view>
   </div>
 </template>
@@ -30,7 +30,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;*/
-  margin: 130px 0 40px 0;
+  /*margin: 130px 0 40px 0;*/
 }
 
 #app h1 {
