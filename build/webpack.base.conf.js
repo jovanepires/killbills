@@ -29,8 +29,10 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        loader: 'style!css-loader',
-
+        include: [
+          path.resolve(__dirname, "not_exist_path")
+        ],
+        loader: 'style!css-loader'
       },
       {
         test: /\.(js|vue)$/,
