@@ -20,16 +20,21 @@
       </div>
     </div>
 
-    <footer>
-      <label for="receitas">Receitas
-        <input type="checkbox" id="receitas" v-model="receitas">
-        <div class="control__indicator"></div>
-      </label>
-      <label for="despesas">Despesas
-        <input type="checkbox" id="despesas" v-model="despesas">
-        <div class="control__indicator"></div>
-      </label>
-    </footer>
+    <nav class="navbar navbar-default navbar-fixed-bottom row" role="navigation">
+      <div class="container">
+
+          <label for="receitas">Receitas
+            <input type="checkbox" id="receitas" v-model="receitas">
+            <div class="control__indicator"></div>
+          </label>
+          <label for="despesas">Despesas
+            <input type="checkbox" id="despesas" v-model="despesas">
+            <div class="control__indicator"></div>
+          </label>
+        
+      </div>
+    </nav>
+
   </section>
 </template>
 
@@ -93,6 +98,7 @@ export default {
 }
 </script>
 <style>
+  body { padding-bottom: 70px; }
   .bills header {
     text-align: center;
     color: #fff;
