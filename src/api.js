@@ -128,6 +128,20 @@ const items = [
       'outros',
       'variável'
     ]
+  },
+  {
+    'title': 'GRANA',
+    'description': 'Mastercard',
+    'value': 1400.00,
+    'currency': 'BRL',
+    'resource': 'itau_cc',
+    'date': '2017-03-06T00:00:00Z',
+    'due': '2017-03-17T00:00:00Z',
+    'tags': [
+      'cartão',
+      'outros',
+      'variável'
+    ]
   }
 ]
 

@@ -1,39 +1,41 @@
 <template>
   <section class="main bills">
 
-    <header :class="activeClass" class="row">
-      <div class="header-content">
-        <span>{{ total | currency }}</span>
-      </div>
-      <div class="header-title">
-        <div class="header-title-inner">
-          saldo geral
+      <header :class="activeClass" class="row">
+        <div class="header-content">
+          <span>{{ total | currency }}</span>
+        </div>
+        <div class="header-title">
+          <div class="header-title-inner">
+            saldo geral
+          </div>
+        </div>
+      </header>
+
+      <div class="scroll-list list-group row">
+        <div class="scroll-list-item list-group-item" v-for="item in recipes">
+          <div class="date col-2">{{ item.date | date }}</div>
+          <div class="title col-6">{{ item.title }}</div>
+          <div class="value col-4">{{ item.value | currency }}</div>
         </div>
       </div>
-    </header>
 
-    <div class="scroll-list list-group row">
-      <div class="scroll-list-item list-group-item" v-for="item in recipes">
-        <div class="date col-2">{{ item.date | date }}</div>
-        <div class="title col-6">{{ item.title }}</div>
-        <div class="value col-4">{{ item.value | currency }}</div>
-      </div>
-    </div>
+    <footer class="footer">
 
-    <nav class="navbar navbar-default navbar-fixed-bottom row" role="navigation">
-      <div class="container">
+        <div class="container">
 
-          <label for="receitas">Receitas
-            <input type="checkbox" id="receitas" v-model="receitas">
-            <div class="control__indicator"></div>
-          </label>
-          <label for="despesas">Despesas
-            <input type="checkbox" id="despesas" v-model="despesas">
-            <div class="control__indicator"></div>
-          </label>
-        
-      </div>
-    </nav>
+            <label for="receitas">Receitas
+              <input type="checkbox" id="receitas" v-model="receitas">
+              <div class="control__indicator"></div>
+            </label>
+            <label for="despesas">Despesas
+              <input type="checkbox" id="despesas" v-model="despesas">
+              <div class="control__indicator"></div>
+            </label>
+
+        </div>
+
+    </footer>
 
   </section>
 </template>
@@ -133,5 +135,14 @@ export default {
   .bills footer label {
     position: relative;
     display: inline-block;
+    line-height: 50px;
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #f5f5f5;
   }
 </style>
