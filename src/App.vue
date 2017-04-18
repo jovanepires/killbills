@@ -5,6 +5,11 @@
 </template>
 
 <script>
+// import 'mdbootstrap/css/bootstrap.min.css'
+// import 'mdbootstrap/css/mdb.min.css'
+// import 'mdbootstrap/js/bootstrap.min.js'
+// import 'mdbootstrap/js/mdb.min.js'
+
 export default {
   name: 'app'
 }
@@ -44,5 +49,14 @@ body {
 #app .main {
   position: relative;
   z-index: 2;
+}
+
+.md-speed-dial.md-fab-bottom-right,
+.md-button.md-fab.md-fab-bottom-right {
+  top: auto;
+  right: 20px !important;
+  bottom: 20px !important;
+  left: auto;
+  position: fixed !important;
 }
 </style>
