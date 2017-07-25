@@ -3,10 +3,14 @@ import Router from 'vue-router'
 import Bills from '@/components/Bills'
 import Item from '@/components/Item'
 import VueMaterial from 'vue-material'
+// import ChartJS from 'chart.js'
+// import VueCharts from 'hchs-vue-charts'
 import 'vue-material/dist/vue-material.css'
 
+// Vue.use(ChartJS)
 Vue.use(Router)
 Vue.use(VueMaterial)
+// Vue.use(VueCharts)
 
 Vue.filter('currency', function (value) {
   return 'R$ ' + value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')

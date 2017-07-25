@@ -4,7 +4,7 @@
     <md-toolbar class="md-transparent row">
       <div class="md-toolbar-container">
 
-        <router-link v-bind:to="'/'" class="md-icon-button">
+        <router-link :to="{ name: 'bills' }" class="md-icon-button">
           <md-icon>arrow_back</md-icon>
         </router-link>
 
@@ -22,47 +22,48 @@
       </div>
     </header>
 
-
-    <div class="container">
-      <form novalidate @submit.stop.prevent="submit">
-        <md-input-container>
-          <md-icon>today</md-icon>
-          <label>Data</label>
-          <md-input v-model=item.date></md-input>
-        </md-input-container>
-        <md-input-container>
-          <md-icon>label_outline</md-icon>
-          <label>Descrição</label>
-          <md-input v-model=item.description></md-input>
-        </md-input-container>
-        <md-input-container>
-          <md-icon>account_balance_wallet</md-icon>
-          <label>Conta</label>
-          <md-input v-model=item.resource.name></md-input>
-        </md-input-container>
-        <md-input-container>
-          <md-icon>info_outline</md-icon>
-          <label>Observação</label>
-          <md-input v-model=item.note></md-input>
-        </md-input-container>
-        <md-button class="md-fab md-raised md-primary md-fab-bottom-right" @click.native="save">
-          <md-icon>done</md-icon>
-        </md-button>
-      </form>
-    </div>
+    <md-layout>
+      <md-layout md-column md-flex-medium="100" md-flex-large="60" md-flex-offset-medium="0" md-flex-offset-large="20" md-align-large="center">
+        <form novalidate @submit.stop.prevent="submit">
+          <md-input-container>
+            <md-icon>today</md-icon>
+            <label>Data</label>
+            <md-input v-model=item.date></md-input>
+          </md-input-container>
+          <md-input-container>
+            <md-icon>label_outline</md-icon>
+            <label>Descrição</label>
+            <md-input v-model=item.description></md-input>
+          </md-input-container>
+          <md-input-container>
+            <md-icon>account_balance_wallet</md-icon>
+            <label>Conta</label>
+            <md-input v-model=item.resource.name></md-input>
+          </md-input-container>
+          <md-input-container>
+            <md-icon>info_outline</md-icon>
+            <label>Observação</label>
+            <md-input v-model=item.note></md-input>
+          </md-input-container>
+          <md-button class="md-fab md-raised md-primary md-fab-bottom-right fixed-button-right" @click.native="save">
+            <md-icon>done</md-icon>
+          </md-button>
+        </form>
+      </md-layout>
+    </md-layout>
 
 
   </section>
 </template>
 
 <script>
-import { getBill } from '../api'
+import { getBill, defaultBill } from '../api.js'
 
 export default {
   name: 'item',
   data () {
     return {
-      _id: 1,
+      _id: null,
       item: null
     }
   },
@@ -74,7 +75,7 @@ export default {
   methods: {
     fetchData () {
       this.error = this.item = null
-      this.item = getBill(this._id)
+      this.item = this._id ? getBill(this._id) : defaultBill()
     },
     byJovane () {
       console.log('desenvolvido por @jovanepires')
@@ -95,6 +96,9 @@ export default {
 </script>
 
 <style>
+  .item {
+    background: #fff !important;
+  }
   .main header {
     text-align: center;
     color: #fff;
