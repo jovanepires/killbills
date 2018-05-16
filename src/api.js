@@ -2,9 +2,9 @@ const ITEM = {
   '_id': 0,
   'description': '',
   'note': '',
-  'value': 0.00,
+  'value': 0,
   'currency': 'BRL',
-  'resource': 'carteira',
+  'resource': {'name': 'carteira', 'namespace': 'carteira'},
   'date': '',
   'due': '',
   'tags': []
@@ -22,9 +22,9 @@ export function storeBills (obj) {
   return localStorage.setItem('items', obj)
 }
 
-export function getBills () {
-  // fake an API request
-  return JSON.parse(localStorage.getItem('items'))
+export function getBills (fileContent) {
+  // fake API request
+  return JSON.parse(fileContent)
 }
 
 export function getBill (id) {
@@ -34,4 +34,10 @@ export function getBill (id) {
 
 export function addBill (obj) {
   return storeBills(getBills().push(obj))
+}
+
+export function uuidv4 () {
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
 }

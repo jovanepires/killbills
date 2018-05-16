@@ -1,151 +1,57 @@
 <template>
-  <section class="main bills">
-    <md-toolbar :class="activeClass" class="row">
-      <md-button class="md-icon-button">
-        <md-icon>menu</md-icon>
-      </md-button>
-      <span style="flex: 1"></span>
-      <md-button class="md-icon-button">
-        <md-icon>filter_list</md-icon>
-      </md-button>
-      <md-button class="md-icon-button">
-        <md-icon>search</md-icon>
-      </md-button>
-      <div class="md-toolbar-container">
-        <header style="flex: 1">
-          <div class="header-content">
-            <span>{{ total | currency }}</span>
+  <md-content>
+    <md-table v-model="allItems" md-card @md-selected="onSelect" md-sort="due" md-sort-order="asc">
+      <md-table-toolbar class="md-layout md-gutter md-alignment-center-center">
+        <md-content>
+          <div class="md-large md-toolbar-row">
+            <h3 class="md-title">TOTAL: {{ total }}</h3>
           </div>
-          <div class="header-title">
-            <div class="header-title-inner">
-              saldo geral
-            </div>
-          </div>
-        </header>
+        </md-content>
+      </md-table-toolbar>
+
+      <!-- <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }">
+        <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
+
+        <div class="md-toolbar-section-end">
+          <md-button class="md-icon-button">
+            <md-icon>delete</md-icon>
+          </md-button>
+        </div>
+      </md-table-toolbar> -->
+
+      <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
+        <md-table-cell md-label="Item" md-sort-by="description">{{ item.description }}</md-table-cell>
+        <md-table-cell md-label="Data" md-sort-by="due">{{ item.due | moment('L') }}</md-table-cell>
+        <md-table-cell md-label="Value" md-sort-by="value">{{ item.value }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+    <md-toolbar class="md-transparent" md-elevation="0">
+      <div class="md-large md-toolbar-row">
+        <span>...sem items para carregar.</span>
       </div>
     </md-toolbar>
-
-    <!-- <canvas id="mycanvas2" count="2"></canvas>
-    <chartjs-line :datalabel="'first'" :backgroundcolor="'rgba(75,192,192,0.1)'" :bordercolor="'#00c853'" target="mycanvas2"></chartjs-line>
-    <chartjs-line :datalabel="'second'" :data="[50, 40, 90, 60]" target="mycanvas2"></chartjs-line> -->
-
-    <md-tabs md-fixed @change="changeFilter">
-      <md-tab id="tudo" md-label="Tudo" class="md-tab-zero-padding-medium">
-        <md-layout>
-          <md-layout md-column md-flex-medium="100" md-flex-large="60" md-flex-offset-medium="0" md-flex-offset-large="20" md-align-large="center">
-            <md-table>
-              <md-table-body>
-                <md-table-row v-for="item in items" :key="item._id" flex="" layout="row">
-                  <md-table-cell flex="60">
-                    <span class="float-date">{{ item.date | date }}</span>
-                    {{ item.description }}
-                  </md-table-cell>
-                  <md-table-cell flex="30">
-                    {{ item.value }}
-                  </md-table-cell>
-                  <md-table-cell flex="10">
-                    <router-link :to="{ name: 'item', params: { id: item._id }}" class="md-icon-button">
-                      <md-icon>more_vert</md-icon>
-                    </router-link>
-                  </md-table-cell>
-
-                </md-table-row>
-              </md-table-body>
-            </md-table>
-          </md-layout>
-        </md-layout>
-      </md-tab>
-      <md-tab id="despesas" md-label="Despesas" class="md-tab-zero-padding-medium">
-        <md-layout md-row>
-          <md-layout md-column md-flex-medium="100" md-flex-large="60" md-flex-offset="0" md-flex-offset-medium="0" md-flex-offset-large="20" md-align-large="center">
-            <md-table>
-              <md-table-body>
-                <md-table-row v-for="item in negativeItems" :key="item._id" flex="" layout="row">
-                  <md-table-cell>
-                    <span class="float-date">{{ item.date | date }}</span>
-                    {{ item.description }}
-                  </md-table-cell>
-                  <md-table-cell flex="30">
-                    {{ item.value }}
-                  </md-table-cell>
-                  <md-table-cell flex="10">
-                    <router-link :to="{ name: 'item', params: { id: item._id }}" class="md-icon-button">
-                      <md-icon>more_vert</md-icon>
-                    </router-link>
-                  </md-table-cell>
-                </md-table-row>
-              </md-table-body>
-            </md-table>
-          </md-layout>
-        </md-layout>
-      </md-tab>
-      <md-tab id="receitas" md-label="Receitas" class="md-tab-zero-padding-medium">
-        <md-layout>
-          <md-layout md-column md-flex-medium="100" md-flex-large="60" md-flex-offset-medium="0" md-flex-offset-large="20" md-align-large="center">
-            <md-table>
-              <md-table-body>
-                <md-table-row v-for="item in positiveItems" :key="item._id" flex="" layout="row">
-                  <md-table-cell flex="60">
-                    <span class="float-date">{{ item.date | date }}</span>
-                    {{ item.description }}
-                  </md-table-cell>
-                  <md-table-cell flex="30">
-                    {{ item.value }}
-                  </md-table-cell>
-                  <md-table-cell flex="10">
-                    <router-link :to="{ name: 'item', params: { id: item._id }}" class="md-icon-button">
-                      <md-icon>more_vert</md-icon>
-                    </router-link>
-                  </md-table-cell>
-                </md-table-row>
-              </md-table-body>
-            </md-table>
-          </md-layout>
-        </md-layout>
-      </md-tab>
-    </md-tabs>
-
-    <div class="fixed-button-right">
-
-        <md-speed-dial md-mode="fling" md-direction="top" class="md-fab-bottom-right">
-          <md-button class="md-fab" md-fab-trigger>
-            <md-icon md-icon-morph>close</md-icon>
-            <md-icon>add</md-icon>
-          </md-button>
-
-          <md-button class="md-fab md-mini md-clean">
-            <md-icon>email</md-icon>
-          </md-button>
-
-          <md-button class="md-fab md-mini md-clean">
-            <md-icon>content_copy</md-icon>
-          </md-button>
-        </md-speed-dial>
-
-    </div>
-
-  </section>
+  </md-content>
 </template>
 
 <!-- <script async defer src="https://apis.google.com/js/api.js"></script> -->
 
 <script>
-import { getBills } from '../api.js'
+import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'bills',
+  name: 'bills-view',
   data () {
     return {
-      items: [],
+      // items: {},
+      selected: [],
       loading: false,
       error: null,
       receitas: true,
-      despesas: true,
-      user: '110208035347780990937',
-      file: '0B8myU7zyawFnX2ZKUkxzejZ5c0k'
+      despesas: true
     }
   },
   mounted: function () {
+    // this.items = getBills(this.fileContent)
     // GapiIntegration.loadDriveApis()
     //   .then(() => {
     //     console.log('starting authorize')
@@ -161,15 +67,9 @@ export default {
   },
   created () {
     this.byJovane()
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
-    fetchData () {
-      this.error = this.items = null
-      this.items = getBills()
-      // this.items = getBills()
-      console.log(this.items)
-    },
     byJovane () {
       console.log('desenvolvido por @jovanepires')
     },
@@ -187,11 +87,34 @@ export default {
         this.receitas = true
         this.despesas = false
       }
-    }
+    },
+    onSelect (items) {
+      this.selected = items
+    },
+    getAlternateLabel (count) {
+      let plural = ''
+
+      if (count > 1) {
+        plural = 's'
+      }
+
+      return `TOTAL ${this.total} for ${count} item${plural} selected`
+    },
+    ...mapActions([
+      'editContent'
+    ])
   },
   computed: {
+    ...mapState({
+      items: state => state.bills.items
+    }),
     allItems: function () {
-      return this.items || {}
+      // this.items = getBills(this.fileContent || '{}')
+      if (this.items) {
+        return this.items
+      }
+
+      return []
     },
     negativeItems: function () {
       if (!this.items) {
@@ -213,15 +136,16 @@ export default {
       if (!this.items) {
         return 0
       }
-      let self = this
-      return this.items.filter(function (item) {
-        if (self.receitas && self.despesas) {
+      let _self = this
+      let _items = this.selected || this.items
+      return _items.filter(function (item) {
+        if (_self.receitas && _self.despesas) {
           return true
         }
-        if (self.receitas) {
+        if (_self.receitas) {
           return item.value > 0
         }
-        if (self.despesas) {
+        if (_self.despesas) {
           return item.value < 0
         }
         return false
@@ -232,62 +156,11 @@ export default {
     activeClass: function () {
       return this.total >= 0 ? 'green' : 'red'
     }
-
   }
 }
 </script>
 <style>
   /*body { padding-bottom: 70px; }*/
 
-  table {
-    background: #ffffff;
-  }
-  .bills header {
-    text-align: center;
-    color: #fff;
-    /*border-bottom: 1px solid #ededed;*/
-  }
-  .bills header.positive {
-    background-color: #1abc9c !important;
-  }
-  .bills header.negative {
-    background-color: #e74c3c !important;
-  }
-  .header-title {
-    outline: none;
-    position: relative;
-    margin: 0 auto;
-  }
-  .header-title-inner {
-    line-height: 20px;
-    padding: 6px 0;
-    position: relative;
-  }
-  .header-content {
-    font-size: 25px;
-    padding-top: 20px;
-    position: relative;
-    margin: 0 auto;
-    width: 100%;
-  }
 
-
-  .float-date{
-    font-size: 9px;
-    display: flex;
-    flex: 1;
-  }
-  .loading {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    overflow: hidden;
-  }
-  .md-spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    height: 50%;
-    transform: translate(-50%, -50%);
-  }
 </style>

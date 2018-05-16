@@ -1,13 +1,17 @@
-import MultiPartBuilder from './multipart'
+import MultiPartBuilder from '@/gapi/multipart'
 
 class GApiIntegration {
 
 /* global gapi, google */
 
   constructor () {
+    this.APPLICATION_ID = '233592491629'
     this.CLIENT_ID = '233592491629-bmrpu85unjgi3612c08vnu0n8832shde.apps.googleusercontent.com'
-    this.SCOPES = ['email', 'profile', 'https://www.googleapis.com/auth/drive',
-      'https://www.googleapis.com/auth/drive.install']
+    this.SCOPES = ['email',
+      'profile',
+      'https://www.googleapis.com/auth/drive',
+      'https://www.googleapis.com/auth/drive.install',
+      'https://www.googleapis.com/auth/plus.login']
 
     this.DEFAULT_FIELDS = 'capabilities(canCopy,canEdit),createdTime,fileExtension,id,mimeType,modifiedTime,name,shared,size,version'
   }
@@ -20,6 +24,7 @@ class GApiIntegration {
           if (gapi && gapi.client) {
             Promise.all([
               gapi.client.load('drive', 'v3'),
+              gapi.client.load('plus', 'v1'),
               gapi.load('picker'),
               gapi.load('drive-share'),
               gapi.load('drive-realtime')])
@@ -52,6 +57,7 @@ class GApiIntegration {
               resolve()
             } else {
               console.info('rejected!')
+              console.error(authResult.error)
               reject('Sorry, you are not allowed to open the file...')
             }
           }
@@ -78,6 +84,12 @@ class GApiIntegration {
       request.authuser = -1
     }
     return request
+  }
+
+  getUserProfile () {
+    return gapi.client.plus.people.get({
+      'userId': 'me'
+    })
   }
 
   saveFile (file, filename, mimeType) {
@@ -220,11 +232,12 @@ class GApiIntegration {
     return new Promise(
       (resolve, reject) => {
         var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
-        view.setMimeTypes(process.env.DEFAULT_MIMETYPE)
+        // view.setMimeTypes('text/plain')
+        // console.log(process.env.DEFAULT_MIMETYPE)
         view.setSelectFolderEnabled(true)
         view.setIncludeFolders(true)
         var picker = new google.picker.PickerBuilder()
-          .setAppId(process.env.APPLICATION_ID)
+          .setAppId('233592491629')
           .setOAuthToken(gapi.auth.getToken().access_token)
           .addView(view)
           .setCallback(function (data) {
@@ -246,7 +259,7 @@ class GApiIntegration {
    * @param {String} id ID of the file to share
    */
   showSharing (id) {
-    var share = new gapi.drive.share.ShareClient(process.env.APPLICATION_ID)
+    var share = new gapi.drive.share.ShareClient('233592491629')
     share.setOAuthToken(gapi.auth.getToken().access_token)
     share.setItemIds([id])
     share.showSettingsDialog()

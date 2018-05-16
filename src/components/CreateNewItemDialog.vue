@@ -1,0 +1,153 @@
+<template>
+    <md-dialog ref="new_item_dialog" :md-active.sync="showDialog" :md-click-outside-to-close="false" :md-close-on-esc="false" class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100">
+      <md-dialog-title>Create new item</md-dialog-title>
+      <md-dialog-content >
+      <!-- <header :class="activeClass" class="row">
+        <div class="header-content">
+          <span>{{ item.value | currency }}</span>
+        </div>
+        <div class="header-title">
+          <div class="header-title-inner">
+            {{ type }}
+          </div>
+        </div>
+      </header> -->
+
+        <form novalidate @submit.stop.prevent="submit">
+          <md-field>
+            <md-icon>local_atm</md-icon>
+            <label>Valor</label>
+            <md-input v-model="value" type="number"></md-input>
+          </md-field>
+          <md-datepicker v-model="date" />
+          <md-field>
+            <md-icon>label_outline</md-icon>
+            <label>Descrição</label>
+            <md-input v-model="item.description"></md-input>
+          </md-field>
+          <md-field>
+            <md-icon>account_balance_wallet</md-icon>
+            <label>Conta</label>
+            <md-select v-model="wallet">
+              <md-option v-for="item in wallets" :value="item" :key="item._id">
+                {{item.name}}
+              </md-option>
+            </md-select>
+          </md-field>
+          <md-field>
+            <md-icon>info_outline</md-icon>
+            <label>Observação</label>
+            <md-input v-model="item.note"></md-input>
+          </md-field>
+        </form>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click.native="showDialog = false">Cancel</md-button>
+        <md-button @click.native="inputItem()">Save</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+</template>
+
+<script>
+import { defaultBill, uuidv4 } from '../api.js'
+import { mapActions, mapState } from 'vuex'
+import _ from 'lodash'
+
+export default {
+  name: 'CreateNewItemDialog',
+  props: ['valuetype'],
+  data () {
+    return {
+      _id: null,
+      item: null,
+      date: new Date(),
+      wallet: null,
+      value: null,
+      showDialog: false
+    }
+  },
+  mounted: function () {
+    this.fetchData()
+  },
+  created () {
+    this.fetchData()
+  },
+  methods: {
+    fetchData () {
+      this.item = defaultBill()
+    },
+    inputItem () {
+      this.item._id = uuidv4()
+      this.item.due = this.date.toJSON()
+      this.item.resource = this.wallet
+      this.item.value = parseFloat(this.value) * this.valuetype
+      this.insertItem(_.clone(this.item, true))
+      let _content = {
+        items: this.items,
+        wallets: this.wallets
+      }
+      this.editContent(JSON.stringify(_content))
+      this.showDialog = false
+    },
+    openDialog () {
+      // this.item = _.clone(defaultBill())
+      this.showDialog = true
+      console.log(this.wallets)
+    },
+    ...mapActions([
+      'insertItem',
+      'editContent'
+    ])
+  },
+  computed: {
+    ...mapState({
+      items: state => state.bills.items,
+      wallets: state => state.bills.wallets
+    }),
+    activeClass: function () {
+      return this.item.value >= 0 ? 'positive' : 'negative'
+    },
+    type: function () {
+      return this.item.value >= 0 ? 'receita' : 'despesa'
+    }
+  }
+}
+</script>
+
+<style>
+  .item {
+    background: #fff !important;
+  }
+  .main header {
+    text-align: center;
+    color: #fff;
+    /*border-bottom: 1px solid #ededed;*/
+  }
+  .main header.positive {
+    color: #1abc9c;
+  }
+  .main header.negative {
+    color: #e74c3c;
+  }
+  .header-title {
+    outline: none;
+    position: relative;
+    margin: 0 auto;
+  }
+  .header-title-inner {
+    line-height: 20px;
+    padding: 6px 0;
+    position: relative;
+  }
+  .header-content {
+    font-size: 25px;
+    padding-top: 20px;
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .md-menu-content {
+    z-index: 10 !important;
+  }
+
+</style>

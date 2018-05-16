@@ -1,6 +1,77 @@
 <template>
-  <div id="app" class="col-md-4 offset-md-4">
-    <md-dialog ref="login">
+  <div id="app">
+    <md-app md-waterfall md-mode="fixed">
+      <md-app-toolbar class="md-dense md-primary">
+        <div class="md-toolbar-row">
+          <div class="md-toolbar-section-start">
+            <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+              <md-icon>menu</md-icon>
+            </md-button>
+
+            <span class="md-title">My Title</span>
+          </div>
+
+          <div class="md-toolbar-section-end">
+            <md-button class="md-icon-button">
+              <md-icon>sync</md-icon>
+            </md-button>
+          </div>
+        </div>
+      </md-app-toolbar>
+
+      <md-app-drawer :md-active.sync="menuVisible">
+        
+        <md-toolbar class="md-large md-dense" :md-elevation="0">
+
+          <div class="md-toolbar-row">
+            <md-avatar>
+              <img v-bind:src="userInfo.image" alt="me">
+            </md-avatar>
+          </div>
+
+          <div class="md-toolbar-row">
+            <div class="md-toolbar-section-start">
+              <div class="md-title">{{ userInfo.email }}</div>
+            </div>
+            <div class="md-toolbar-section-end">
+              <md-button class="md-icon-button">
+                <md-icon>more_vert</md-icon>
+              </md-button>
+            </div>
+          </div>
+
+        </md-toolbar>
+
+        <md-list>
+          <md-list-item>
+            <md-icon>move_to_inbox</md-icon>
+            <span class="md-list-item-text">Inbox</span>
+          </md-list-item>
+
+          <md-list-item>
+            <md-icon>send</md-icon>
+            <span class="md-list-item-text">Sent Mail</span>
+          </md-list-item>
+
+          <md-list-item>
+            <md-icon>delete</md-icon>
+            <span class="md-list-item-text">Trash</span>
+          </md-list-item>
+
+          <md-list-item>
+            <md-icon>error</md-icon>
+            <span class="md-list-item-text">Spam</span>
+          </md-list-item>
+        </md-list>
+      </md-app-drawer>
+      <md-app-content>
+        <!-- <md-content class="md-scrollbar"> -->
+          <bills-view ref="bills"></bills-view>
+        <!-- </md-content> -->
+      </md-app-content>
+    </md-app>
+
+    <md-dialog ref="login" :md-active.sync="showLogin">
       <md-dialog-title>Login</md-dialog-title>
       <md-dialog-content>
         <p>Please log in with your Google Drive account</p>
@@ -9,12 +80,26 @@
         <md-button class="md-primary" @click.native="handleAuthClick">Login</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <div class="loading" v-if="loading">
-      <md-spinner :md-size="60" md-indeterminate></md-spinner>
-    </div>
-    <transition name="slide">
-      <router-view></router-view>
-    </transition>
+
+    <md-speed-dial class="md-bottom-right md-fixed" md-direction="top" md-event="hover">
+      <md-speed-dial-target>
+        <md-icon class="md-morph-initial">add</md-icon>
+        <md-icon class="md-morph-final">close</md-icon>
+      </md-speed-dial-target>
+
+      <md-speed-dial-content>
+        <md-button class="md-icon-button" @click="openCreateNewItem(1)">
+          <md-icon>add</md-icon>
+        </md-button>
+
+        <md-button class="md-icon-button" @click="openCreateNewItem(-1)">
+          <md-icon>remove</md-icon>
+        </md-button>
+      </md-speed-dial-content>
+    </md-speed-dial>
+
+    <create-new-item-dialog ref="new_item_dialog" v-bind:valuetype="newvaluetype"></create-new-item-dialog>
+    <create-new-file-dialog ref="create_new_file"></create-new-file-dialog>
   </div>
 </template>
 
@@ -23,130 +108,126 @@
 // import 'mdbootstrap/css/mdb.min.css'
 // import 'mdbootstrap/js/bootstrap.min.js'
 // import 'mdbootstrap/js/mdb.min.js'
-import { storeBills } from '@/api.js'
+import qs from 'querystringify'
+// import { storeBills } from '@/api.js'
 import GapiIntegration from '@/gapi/gapi-integration'
+import CreateNewFileDialog from '@/components/CreateNewFileDialog'
+import CreateNewItemDialog from '@/components/CreateNewItemDialog'
+import Bills from '@/components/Bills'
+import user from '@/stores/user'
+import { file } from '@/services'
 
 export default {
   name: 'app',
+  components: {
+    'bills-view': Bills,
+    'create-new-file-dialog': CreateNewFileDialog,
+    'create-new-item-dialog': CreateNewItemDialog
+  },
   data () {
     return {
+      menuVisible: false,
+      showLogin: false,
       items: [],
       loading: true,
       error: null,
       receitas: true,
       despesas: true,
-      user: '110208035347780990937',
-      file: '0B8myU7zyawFnX2ZKUkxzejZ5c0k'
+      user: null,
+      file: null,
+      newvaluetype: 1,
+      userInfo: user.state
     }
   },
   mounted: function () {
+    let queryVars = qs.parse(window.location.search)
+    this.user = queryVars.user
+    this.file = queryVars.file // window.localStorage.getItem('fileMetadata.id')
+
     GapiIntegration.loadDriveApis()
       .then(() => {
         console.log('starting authorize')
         GapiIntegration.authorize(true, this.user)
           .then(() => {
-            return this.loadThisFile()
+            this.loading = false
+            this.loadUserData()
+            this.loadThisFile()
           })
           .catch((reason) => {
             console.log('error inload or authorize')
-            this.$refs.login.open()
+            console.log(reason)
+            this.showLogin = true
+            this.loading = false
           })
       })
   },
   methods: {
     handleAuthClick () {
-      this.$refs.login.close()
+      this.showLogin = false
       GapiIntegration.authorize(false, this.user)
         .then(() => {
+          this.loadUserData()
           this.loadThisFile()
         })
         .catch((reason) => {
           console.log(reason)
         })
     },
-    loadThisFile () {
-      var vm = this
-      if (!this.file) {
-        return
-      }
-
-      GapiIntegration.loadFile(this.file).then((file) => {
-        vm.$nextTick(function () {
-          vm.items = JSON.parse(file.content)
-          storeBills(file.content)
-          this.loading = false
+    loadUserData () {
+      console.log('load userData')
+      GapiIntegration.getUserProfile().then((resp) => {
+        console.log(resp)
+        user.setUser({
+          name: resp.result.displayName,
+          image: resp.result.image.url,
+          email: resp.result.emails[0].value
         })
       })
+    },
+    loadThisFile () {
+      console.log('load file')
+      console.log(this.file)
+      // if no file id in URL, open create dialog
+      if (this.file) {
+        return file.loadFromGDrive(this.file)
+          .catch((error) => {
+            this.errorMessage = error
+            console.error(error)
+            // this.$refs.errorMessage.open()
+          })
+      } else {
+        this.openCreateNewFile()
+      }
+    },
+    openCreateNewFile () {
+      this.$refs.create_new_file.openDialog()
+    },
+    openCreateNewItem (valuetype) {
+      this.newvaluetype = valuetype
+      this.$refs.new_item_dialog.openDialog()
+    },
+    tryAgain () {
+      window.location.reload()
     }
   }
 }
 </script>
 
 <style>
-body {
-    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    line-height: 1.4em;
-    background: #e0e0e0 !important;
-    color: #4d4d4d;
-    /*min-width: 230px;
-    max-width: 550px;*/
-    margin: 0 auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-    font-weight: 300;
-}
-
-#app {
-  /*font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;*/
-  /*margin: 130px 0 40px 0;*/
-}
-
-#app h1 {
-  font-weight: 100;
-  text-align: center;
-  -webkit-text-rendering: optimizeLegibility;
-  -moz-text-rendering: optimizeLegibility;
-  text-rendering: optimizeLegibility;
-}
-
-#app .main {
-  position: relative;
-  z-index: 2;
-}
-
-/*.md-speed-dial.md-fab-bottom-right,
-.md-button.md-fab.md-fab-bottom-right {
-  top: auto;
-  right: 20px !important;
-  bottom: 20px !important;
-  left: auto;
-  position: fixed !important;
-}*/
-.fixed-button-right {
-  bottom: 0;
-  padding: 23px 12px 23px 15px;
-  /*pointer-events: none;*/
-  position: fixed !important;
-  right: 0;
-  white-space: nowrap;
-  z-index: 21;
-}
-/*.fixed-button-right-wrapper {
-  -webkit-flex-direction: row-reverse;
-  flex-direction: row-reverse;
-  display: -webkit-flex;
-  display: flex;
-}*/
-@media (max-width:1279px) {
-  .md-tab-zero-padding-medium {
-    padding: 0 !important;
+  /* fix google picker conflict with vue-material */
+  .picker-frame.picker-dialog-frame {
+    height: 100% !important;
   }
-  .md-flex-offset-medium-0 {
-    margin-left: 0 !important;
+
+  /* mobile friendly */
+  @media (max-width: 1024px) {
+    .picker.picker-dialog {
+      top: 0 !important;
+      height: 100% !important;
+    }
+
+    .picker.picker-dialog > .picker.picker-dialog-content {
+      height: 100% !important;
+    }
   }
-}
 </style>
