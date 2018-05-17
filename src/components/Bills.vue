@@ -24,12 +24,13 @@
         <md-table-cell md-label="Data" md-sort-by="due">{{ item.due | moment('L') }}</md-table-cell>
         <md-table-cell md-label="Value" md-sort-by="value">{{ item.value }}</md-table-cell>
       </md-table-row>
+
+      <md-toolbar class="md-transparent" md-elevation="0">
+        <div class="md-large md-toolbar-row">
+          <span>...sem items para carregar.</span>
+        </div>
+      </md-toolbar>
     </md-table>
-    <md-toolbar class="md-transparent" md-elevation="0">
-      <div class="md-large md-toolbar-row">
-        <span>...sem items para carregar.</span>
-      </div>
-    </md-toolbar>
   </md-content>
 </template>
 

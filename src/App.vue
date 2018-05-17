@@ -1,71 +1,100 @@
 <template>
   <div id="app">
-    <md-app md-waterfall md-mode="fixed">
-      <md-app-toolbar class="md-dense md-primary">
+    <md-app @md-waterfall="true" md-mode="fixed">
+      <md-app-toolbar class="md-dense md-primary" md-elevation="4">
         <div class="md-toolbar-row">
           <div class="md-toolbar-section-start">
-            <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+            <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
               <md-icon>menu</md-icon>
             </md-button>
 
-            <span class="md-title">My Title</span>
+            <span class="md-title">
+              <span>Receitas</span>
+              <md-icon>swap_horiz</md-icon>
+              <span>Despesas</span>
+            </span>
           </div>
 
           <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button">
-              <md-icon>sync</md-icon>
-            </md-button>
+            <sync-button></sync-button>
           </div>
         </div>
       </md-app-toolbar>
 
-      <md-app-drawer :md-active.sync="menuVisible">
-        
-        <md-toolbar class="md-large md-dense" :md-elevation="0">
+      <md-app-drawer :md-active.sync="menuVisible" class="md-fixed">
 
+        <md-toolbar class="md-large md-dense md-accent" :md-elevation="0">
           <div class="md-toolbar-row">
-            <md-avatar>
-              <img v-bind:src="userInfo.image" alt="me">
-            </md-avatar>
-          </div>
-
-          <div class="md-toolbar-row">
-            <div class="md-toolbar-section-start">
-              <div class="md-title">{{ userInfo.email }}</div>
-            </div>
             <div class="md-toolbar-section-end">
-              <md-button class="md-icon-button">
-                <md-icon>more_vert</md-icon>
+              <md-button class="md-icon-button md-dense" @click="toggleMenu">
+                <md-icon>keyboard_arrow_left</md-icon>
               </md-button>
             </div>
           </div>
+          <div class="md-toolbar-row">
+              <md-avatar class="md-large"><img v-bind:src="userInfo.image" alt="me"></md-avatar>
+          </div>
+
+          <div class="md-toolbar-row md-layout md-alignment-center">
+
+              <div>{{ userInfo.email }}</div>
+
+          </div>
+
 
         </md-toolbar>
 
         <md-list>
+          <md-subheader>Wallets</md-subheader>
           <md-list-item>
-            <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">Inbox</span>
+            <md-icon>account_balance_wallet</md-icon>
+            <span class="md-list-item-text">Money</span>
+          </md-list-item>
+          <md-list-item>
+            <md-icon>credit_card</md-icon>
+            <span class="md-list-item-text">Credit Card</span>
           </md-list-item>
 
-          <md-list-item>
-            <md-icon>send</md-icon>
-            <span class="md-list-item-text">Sent Mail</span>
-          </md-list-item>
+          <md-divider></md-divider>
+          <md-subheader>Filters</md-subheader>
 
           <md-list-item>
-            <md-icon>delete</md-icon>
-            <span class="md-list-item-text">Trash</span>
+            <md-icon>list</md-icon>
+            <span class="md-list-item-text">Home</span>
+          </md-list-item>
+          <md-list-item>
+            <md-icon>list</md-icon>
+            <span class="md-list-item-text">Work</span>
+          </md-list-item>
+          <md-list-item>
+            <md-icon>list</md-icon>
+            <span class="md-list-item-text">Travel</span>
           </md-list-item>
 
+          <md-divider></md-divider>
+          <md-subheader>Tags</md-subheader>
+
           <md-list-item>
-            <md-icon>error</md-icon>
-            <span class="md-list-item-text">Spam</span>
+            <md-icon>label</md-icon>
+            <span class="md-list-item-text">Uber</span>
+          </md-list-item>
+          <md-list-item>
+            <md-icon>label</md-icon>
+            <span class="md-list-item-text">Food</span>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <md-icon>build</md-icon>
+            <span class="md-list-item-text">Configurations</span>
+          </md-list-item>
+          <md-list-item>
+            <md-icon>info</md-icon>
+            <span class="md-list-item-text">About & Feedback</span>
           </md-list-item>
         </md-list>
       </md-app-drawer>
-      <md-app-content>
-        <!-- <md-content class="md-scrollbar"> -->
+      <md-app-content class="md-layout md-gutter md-alignment-center">
+        <!-- <md-content class="md-scrollbar md-layout md-gutter md-alignment-center"> -->
           <bills-view ref="bills"></bills-view>
         <!-- </md-content> -->
       </md-app-content>
@@ -114,6 +143,7 @@ import GapiIntegration from '@/gapi/gapi-integration'
 import CreateNewFileDialog from '@/components/CreateNewFileDialog'
 import CreateNewItemDialog from '@/components/CreateNewItemDialog'
 import Bills from '@/components/Bills'
+import Sync from '@/components/Sync'
 import user from '@/stores/user'
 import { file } from '@/services'
 
@@ -121,6 +151,7 @@ export default {
   name: 'app',
   components: {
     'bills-view': Bills,
+    'sync-button': Sync,
     'create-new-file-dialog': CreateNewFileDialog,
     'create-new-item-dialog': CreateNewItemDialog
   },
@@ -176,7 +207,6 @@ export default {
     loadUserData () {
       console.log('load userData')
       GapiIntegration.getUserProfile().then((resp) => {
-        console.log(resp)
         user.setUser({
           name: resp.result.displayName,
           image: resp.result.image.url,
@@ -186,7 +216,6 @@ export default {
     },
     loadThisFile () {
       console.log('load file')
-      console.log(this.file)
       // if no file id in URL, open create dialog
       if (this.file) {
         return file.loadFromGDrive(this.file)
@@ -208,6 +237,9 @@ export default {
     },
     tryAgain () {
       window.location.reload()
+    },
+    toggleMenu () {
+      this.menuVisible = !this.menuVisible
     }
   }
 }
@@ -228,6 +260,15 @@ export default {
 
     .picker.picker-dialog > .picker.picker-dialog-content {
       height: 100% !important;
+    }
+
+    .md-app-content {
+      padding: 0;
+    }
+
+    .md-app-content .md-card {
+      margin-left: 0;
+      margin-right: 0;
     }
   }
 </style>

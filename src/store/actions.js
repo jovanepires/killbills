@@ -21,7 +21,7 @@ export const createNewFile = ({commit, state}, filename) => {
 }
 
 export const saveFile = ({commit, state}) => {
-  console.log('Saving new file')
+  console.log('Saving file')
   commit(types.FILE_SAVING)
 
   return new Promise((resolve, reject) => {
@@ -46,7 +46,7 @@ export const editContent = ({commit, state}, value) => {
   // commit(types.EDIT_CONTENT, value)
   // GapiIntegration.contentText.setText(value)
   commit(types.EDIT_CONTENT, value)
-  GapiIntegration.saveFile(state.file)
+  // GapiIntegration.saveFile(state.file)
   // save file / sync with google realtime api
   debounceSave({commit, state})
   commit(types.FILE_DIRTY)

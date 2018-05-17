@@ -28,8 +28,8 @@
           <md-field>
             <md-icon>account_balance_wallet</md-icon>
             <label>Conta</label>
-            <md-select v-model="wallet">
-              <md-option v-for="item in wallets" :value="item" :key="item._id">
+            <md-select v-model="wallet" md-align-trigger>
+              <md-option v-for="item in wallets" :value="item._id" :key="item._id">
                 {{item.name}}
               </md-option>
             </md-select>
@@ -79,7 +79,7 @@ export default {
     inputItem () {
       this.item._id = uuidv4()
       this.item.due = this.date.toJSON()
-      this.item.resource = this.wallet
+      this.item.resource = _.clone(this.wallets.find(x => x._id === this.wallet))
       this.item.value = parseFloat(this.value) * this.valuetype
       this.insertItem(_.clone(this.item, true))
       let _content = {
@@ -90,9 +90,8 @@ export default {
       this.showDialog = false
     },
     openDialog () {
-      // this.item = _.clone(defaultBill())
+      this.item = _.clone(defaultBill())
       this.showDialog = true
-      console.log(this.wallets)
     },
     ...mapActions([
       'insertItem',
@@ -115,6 +114,12 @@ export default {
 </script>
 
 <style>
+  .md-menu.md-menu-content {
+    margin-left: 12px;
+  }
+  .md-field>.md-icon~.md-select>.md-input {
+    margin-left: 12px;
+  }
   .item {
     background: #fff !important;
   }

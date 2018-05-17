@@ -72,7 +72,7 @@ const mutations = {
   [LOAD_BILLS] (state, fileContent) {
     if (fileContent) {
       let content = JSON.parse(fileContent)
-      state.items = state.items.concat(content.items)
+      state.items = [...state.items, ...content.items]
     } else {
       state.items = []
     }
