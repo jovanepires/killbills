@@ -9,9 +9,7 @@
             </md-button>
 
             <span class="md-title">
-              <span>Receitas</span>
-              <md-icon>swap_horiz</md-icon>
-              <span>Despesas</span>
+              PayOut
             </span>
           </div>
 
