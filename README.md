@@ -1,4 +1,4 @@
-# No name (temp)
+# PayOut
 
 > A Vue.js project
 
