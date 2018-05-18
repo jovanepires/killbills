@@ -2,7 +2,8 @@ import {
   INSERT_BILL,
   UPDATE_BILL,
   DELETE_BILL,
-  LOAD_BILLS
+  LOAD_BILLS,
+  INSERT_WALLET
 } from '@/store/mutation-types'
 
 export const STATUS_LIST = {
@@ -17,10 +18,10 @@ export const STATUS_LIST = {
 const state = {
   items: [],
   item: {},
-  wallets: [
-    {_id: 1, 'name': 'carteira', 'namespace': 'carteira'},
-    {_id: 2, 'name': 'cartão master', 'namespace': 'carteira'},
-    {_id: 3, 'name': 'cartão visa', 'namespace': 'carteira'}
+  wallets: [],
+  filters: [
+    {_id: 1, 'name': 'work', 'condition': ''},
+    {_id: 2, 'name': 'home', 'condition': ''}
   ],
   status: STATUS_LIST.INITIAL
 }
@@ -57,8 +58,8 @@ const mutations = {
   // },
 
   [INSERT_BILL] (state, item) {
-    state.status = STATUS_LIST.INITIAL
     state.items.push(item)
+    state.status = STATUS_LIST.NOT_SAVED
   },
 
   [UPDATE_BILL] (state, { index, text }) {
@@ -73,11 +74,17 @@ const mutations = {
     if (fileContent) {
       let content = JSON.parse(fileContent)
       state.items = [...state.items, ...content.items]
+      state.wallets = [...state.wallets, ...content.wallets]
     } else {
       state.items = []
     }
 
     state.status = STATUS_LIST.LOADED
+  },
+
+  [INSERT_WALLET] (state, value) {
+    state.wallets.push(value)
+    state.status = STATUS_LIST.NOT_SAVED
   }
 }
 

@@ -1,14 +1,25 @@
 <template>
     <md-dialog ref="new_item_dialog" :md-active.sync="showDialog" :md-click-outside-to-close="false" :md-close-on-esc="false" class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100">
       <md-dialog-title>Create new item</md-dialog-title>
-      <md-dialog-content>
+      <md-dialog-content >
+      <!-- <header :class="activeClass" class="row">
+        <div class="header-content">
+          <span>{{ item.value | currency }}</span>
+        </div>
+        <div class="header-title">
+          <div class="header-title-inner">
+            {{ type }}
+          </div>
+        </div>
+      </header> -->
+
         <form novalidate @submit.stop.prevent="submit">
           <md-field>
             <md-icon>local_atm</md-icon>
             <label>Valor</label>
             <md-input v-model="value" type="number"></md-input>
           </md-field>
-          <md-datepicker md-override-native="true" v-model="date" />
+          <md-datepicker v-model="date" />
           <md-field>
             <md-icon>label_outline</md-icon>
             <label>Descrição</label>
@@ -43,13 +54,13 @@ import { mapActions, mapState } from 'vuex'
 import _ from 'lodash'
 
 export default {
-  name: 'CreateNewItemDialog',
+  name: 'CreateNewFilterDialog',
   props: ['valuetype'],
   data () {
     return {
       _id: null,
       item: null,
-      date: null,
+      date: new Date(),
       wallet: null,
       value: null,
       showDialog: false

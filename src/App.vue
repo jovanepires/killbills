@@ -9,7 +9,8 @@
             </md-button>
 
             <span class="md-title">
-              PayOut
+              <span>PayOut</span>
+              <md-icon>swap_horiz</md-icon>
             </span>
           </div>
 
@@ -32,64 +33,11 @@
           <div class="md-toolbar-row">
               <md-avatar class="md-large"><img v-bind:src="userInfo.image" alt="me"></md-avatar>
           </div>
-
           <div class="md-toolbar-row md-layout md-alignment-center">
-
               <div>{{ userInfo.email }}</div>
-
           </div>
-
-
         </md-toolbar>
-
-        <md-list>
-          <md-subheader>Wallets</md-subheader>
-          <md-list-item>
-            <md-icon>account_balance_wallet</md-icon>
-            <span class="md-list-item-text">Money</span>
-          </md-list-item>
-          <md-list-item>
-            <md-icon>credit_card</md-icon>
-            <span class="md-list-item-text">Credit Card</span>
-          </md-list-item>
-
-          <md-divider></md-divider>
-          <md-subheader>Filters</md-subheader>
-
-          <md-list-item>
-            <md-icon>list</md-icon>
-            <span class="md-list-item-text">Home</span>
-          </md-list-item>
-          <md-list-item>
-            <md-icon>list</md-icon>
-            <span class="md-list-item-text">Work</span>
-          </md-list-item>
-          <md-list-item>
-            <md-icon>list</md-icon>
-            <span class="md-list-item-text">Travel</span>
-          </md-list-item>
-
-          <md-divider></md-divider>
-          <md-subheader>Tags</md-subheader>
-
-          <md-list-item>
-            <md-icon>label</md-icon>
-            <span class="md-list-item-text">Uber</span>
-          </md-list-item>
-          <md-list-item>
-            <md-icon>label</md-icon>
-            <span class="md-list-item-text">Food</span>
-          </md-list-item>
-          <md-divider></md-divider>
-          <md-list-item>
-            <md-icon>build</md-icon>
-            <span class="md-list-item-text">Configurations</span>
-          </md-list-item>
-          <md-list-item>
-            <md-icon>info</md-icon>
-            <span class="md-list-item-text">About & Feedback</span>
-          </md-list-item>
-        </md-list>
+        <menu-view></menu-view>
       </md-app-drawer>
       <md-app-content class="md-layout md-gutter md-alignment-center">
         <!-- <md-content class="md-scrollbar md-layout md-gutter md-alignment-center"> -->
@@ -107,25 +55,7 @@
         <md-button class="md-primary" @click.native="handleAuthClick">Login</md-button>
       </md-dialog-actions>
     </md-dialog>
-
-    <md-speed-dial class="md-bottom-right md-fixed" md-direction="top" md-event="hover">
-      <md-speed-dial-target>
-        <md-icon class="md-morph-initial">add</md-icon>
-        <md-icon class="md-morph-final">close</md-icon>
-      </md-speed-dial-target>
-
-      <md-speed-dial-content>
-        <md-button class="md-icon-button" @click="openCreateNewItem(1)">
-          <md-icon>add</md-icon>
-        </md-button>
-
-        <md-button class="md-icon-button" @click="openCreateNewItem(-1)">
-          <md-icon>remove</md-icon>
-        </md-button>
-      </md-speed-dial-content>
-    </md-speed-dial>
-
-    <create-new-item-dialog ref="new_item_dialog" v-bind:valuetype="newvaluetype"></create-new-item-dialog>
+    <speed-dial></speed-dial>
     <create-new-file-dialog ref="create_new_file"></create-new-file-dialog>
   </div>
 </template>
@@ -139,9 +69,10 @@ import qs from 'querystringify'
 // import { storeBills } from '@/api.js'
 import GapiIntegration from '@/gapi/gapi-integration'
 import CreateNewFileDialog from '@/components/CreateNewFileDialog'
-import CreateNewItemDialog from '@/components/CreateNewItemDialog'
 import Bills from '@/components/Bills'
 import Sync from '@/components/Sync'
+import Menu from '@/components/Menu'
+import SpeedDial from '@/components/SpeedDial'
 import user from '@/stores/user'
 import { file } from '@/services'
 
@@ -150,8 +81,9 @@ export default {
   components: {
     'bills-view': Bills,
     'sync-button': Sync,
-    'create-new-file-dialog': CreateNewFileDialog,
-    'create-new-item-dialog': CreateNewItemDialog
+    'menu-view': Menu,
+    'speed-dial': SpeedDial,
+    'create-new-file-dialog': CreateNewFileDialog
   },
   data () {
     return {
@@ -229,10 +161,6 @@ export default {
     openCreateNewFile () {
       this.$refs.create_new_file.openDialog()
     },
-    openCreateNewItem (valuetype) {
-      this.newvaluetype = valuetype
-      this.$refs.new_item_dialog.openDialog()
-    },
     tryAgain () {
       window.location.reload()
     },
@@ -261,12 +189,12 @@ export default {
     }
 
     .md-app-content {
-      padding: 0;
+      padding: 0 !important;
     }
 
     .md-app-content .md-card {
-      margin-left: 0;
-      margin-right: 0;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
     }
   }
 </style>

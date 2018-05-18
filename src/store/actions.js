@@ -21,6 +21,9 @@ export const createNewFile = ({commit, state}, filename) => {
 }
 
 export const saveFile = ({commit, state}) => {
+  let content = JSON.stringify(state.bills)
+  commit(types.EDIT_CONTENT, content)
+
   console.log('Saving file')
   commit(types.FILE_SAVING)
 
@@ -63,8 +66,12 @@ export const updateContent = ({commit, state}, text) => {
   // }
 }
 
-export const insertItem = ({commit, state}, item) => {
-  commit(types.INSERT_BILL, item)
+export const insertItem = ({commit, state}, value) => {
+  commit(types.INSERT_BILL, value)
+}
+
+export const insertWallet = ({commit, state}, value) => {
+  commit(types.INSERT_WALLET, value)
 }
 
 export const renameFile = ({commit, state}, filename) => {

@@ -16,7 +16,7 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'sync-button',
+  name: 'Sync',
   data () {
     return {
       showDialog: false
