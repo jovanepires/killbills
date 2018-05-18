@@ -13,6 +13,14 @@
             <label>Total</label>
             <md-input v-model="total" type="number"></md-input>
           </md-field>
+          <md-field>
+            <md-icon>public</md-icon>
+            <label>Currency</label>
+            <md-select v-model="currency" md-align-trigger>
+              <md-option value="BRL">BRL</md-option>
+              <md-option value="USD">USD</md-option>
+            </md-select>
+          </md-field>
           <md-datepicker md-override-native="true" v-model="expires" />
           <md-field>
             <md-icon>autorenew</md-icon>
@@ -41,6 +49,7 @@ export default {
       name: null,
       expires: null,
       total: 0,
+      currency: 'BRL',
       interval: 0,
       showDialog: false
     }
@@ -57,6 +66,7 @@ export default {
         _id: uuidv4(),
         name: this.name,
         total: parseFloat(this.total),
+        currency: this.currency,
         expires: this.expires.toJSON(),
         interval: parseInt(this.interval, 10)
       }

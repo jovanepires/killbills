@@ -5,7 +5,7 @@
       <md-list-item v-for="wallet in wallets" :key="wallet._id">
         <md-icon>account_balance_wallet</md-icon>
         <span class="md-list-item-text">{{ wallet.name }}</span>
-        <span class="md-list-action">{{ wallet.total | currency }}</span>
+        <span class="md-list-action">{{ wallet.total | currency(wallet.currency) }}</span>
       </md-list-item>
     </md-content>
 

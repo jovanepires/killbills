@@ -24,6 +24,14 @@
             </md-select>
           </md-field>
           <md-field>
+            <md-icon>public</md-icon>
+            <label>Currency</label>
+            <md-select v-model="currency" md-align-trigger>
+              <md-option value="BRL">BRL</md-option>
+              <md-option value="USD">USD</md-option>
+            </md-select>
+          </md-field>
+          <md-field>
             <md-icon>info_outline</md-icon>
             <label>Observação</label>
             <md-input v-model="item.note"></md-input>
@@ -52,6 +60,7 @@ export default {
       date: null,
       wallet: null,
       value: null,
+      currency: 'BRL',
       showDialog: false
     }
   },
@@ -70,6 +79,7 @@ export default {
       this.item.due = this.date.toJSON()
       this.item.resource = _.clone(this.wallets.find(x => x._id === this.wallet))
       this.item.value = parseFloat(this.value) * this.valuetype
+      this.item.currency = this.currency
       this.insertItem(_.clone(this.item, true))
       this.saveFile()
       this.showDialog = false

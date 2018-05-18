@@ -22,7 +22,7 @@
       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
         <md-table-cell md-label="Item" md-sort-by="description">{{ item.description }}</md-table-cell>
         <md-table-cell md-label="Data" md-sort-by="due">{{ item.due | moment('L') }}</md-table-cell>
-        <md-table-cell md-label="Value" md-sort-by="value">{{ item.value | currency }}</md-table-cell>
+        <md-table-cell md-label="Value" md-sort-by="value">{{ item.value | currency(item.currency) }}</md-table-cell>
       </md-table-row>
 
       <md-toolbar class="md-transparent" md-elevation="0">
