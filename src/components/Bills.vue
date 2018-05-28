@@ -1,12 +1,17 @@
 <template>
   <md-content>
-    <md-table v-model="allItems" md-card @md-selected="onSelect" md-sort="due" md-sort-order="asc">
-      <md-table-toolbar class="md-layout md-gutter md-alignment-center-center">
-        <md-content>
-          <div class="md-large md-toolbar-row">
-            <h3 class="md-title">TOTAL: {{ total }}</h3>
+    <md-table v-model="allItems" @md-selected="onSelect" md-sort="due" md-sort-order="asc" md-card>
+      <md-table-toolbar v-if="allItems.length" class="">
+        <div class="md-toolbar-section-start">
+          <h3 class="md-title">TOTAL: {{ total | currency }}</h3>
+        </div>
+
+        <div v-if="this.filter" class="md-toolbar-section-end">
+          <div>
+            <md-icon>filter_list</md-icon>
+            <span>FILTER: {{ this.filter.name.toUpperCase() }}</span>
           </div>
-        </md-content>
+        </div>
       </md-table-toolbar>
 
       <!-- <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }">
@@ -18,18 +23,17 @@
           </md-button>
         </div>
       </md-table-toolbar> -->
+      <md-table-empty-state
+        md-icon="error_outline"
+        :md-label="'No items found' | translate">
+      </md-table-empty-state>
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
-        <md-table-cell md-label="Item" md-sort-by="description">{{ item.description }}</md-table-cell>
-        <md-table-cell md-label="Data" md-sort-by="due">{{ item.due | moment('L') }}</md-table-cell>
-        <md-table-cell md-label="Value" md-sort-by="value">{{ item.value | currency(item.currency) }}</md-table-cell>
+      <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single" md-auto-select>
+        <md-table-cell>{{ item.description }}</md-table-cell>
+        <md-table-cell>{{ item.due | moment('L') }}</md-table-cell>
+        <md-table-cell md-numeric>{{ item.value | currency(item.currency) }}</md-table-cell>
       </md-table-row>
 
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <div class="md-large md-toolbar-row">
-          <span>...sem items para carregar.</span>
-        </div>
-      </md-toolbar>
     </md-table>
   </md-content>
 </template>
@@ -50,6 +54,9 @@ export default {
       receitas: true,
       despesas: true
     }
+  },
+  mounted: function () {
+    // console.log(this.filter)
   },
   methods: {
     changeFilter: function (tabIndex) {
@@ -85,15 +92,37 @@ export default {
   },
   computed: {
     ...mapState({
-      items: state => state.bills.items
+      items: state => state.bills.itemsIds.map(id => state.bills.items[id]),
+      filter: state => state.bills.filters[state.bills.filterApply]
     }),
     allItems: function () {
       // this.items = getBills(this.fileContent || '{}')
-      if (this.items) {
-        return this.items
-      }
+      let self = this
+      return this.items.filter(function (item) {
+        if (self.filter) {
+          let filtered = true
 
-      return []
+          Object.keys(item).forEach(prop => {
+            let contidion = self.filter.conditions[prop]
+
+            if (contidion && contidion.operator === '>') {
+              filtered = filtered && item[prop] > parseFloat(contidion.value)
+            }
+
+            if (contidion && contidion.operator === '<') {
+              filtered = filtered && item[prop] < parseFloat(contidion.value)
+            }
+
+            if (contidion && contidion.operator === 'contains') {
+              filtered = filtered && item[prop].toString().toLowerCase().includes(contidion.value.toLowerCase())
+            }
+          })
+
+          return filtered
+        }
+
+        return true
+      })
     },
     negativeItems: function () {
       if (!this.items) {
@@ -112,22 +141,13 @@ export default {
       })
     },
     total: function () {
-      if (!this.items) {
+      if (!this.allItems) {
         return 0
       }
-      let _self = this
-      let _items = this.selected || this.items
+
+      let _items = this.allItems
       return _items.filter(function (item) {
-        if (_self.receitas && _self.despesas) {
-          return true
-        }
-        if (_self.receitas) {
-          return item.value > 0
-        }
-        if (_self.despesas) {
-          return item.value < 0
-        }
-        return false
+        return true
       }).reduce(function (a, i) {
         return a + i.value
       }, 0)
@@ -138,8 +158,3 @@ export default {
   }
 }
 </script>
-<style>
-  /*body { padding-bottom: 70px; }*/
-
-
-</style>

@@ -7,7 +7,7 @@ import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
-import 'vue-material/dist/theme/default.css' // This line here
+// import 'vue-material/dist/theme/default.css' // This line here
 import '@/filters/filters'
 
 Vue.config.productionTip = false

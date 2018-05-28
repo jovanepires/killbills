@@ -20,6 +20,8 @@ export const INSERT_BILL = 'INSERT_BILL'
 export const UPDATE_BILL = 'UPDATE_BILL'
 export const DELETE_BILL = 'DELETE_BILL'
 export const LOAD_BILLS = 'LOAD_BILLS'
+export const APPLY_FILTER = 'APPLY_FILTER'
+export const APPLY_TAGS = 'APPLY_TAGS'
 
 // wallets mutations
 export const INSERT_WALLET = 'INSERT_WALLET'

@@ -3,8 +3,11 @@ import {
   UPDATE_BILL,
   DELETE_BILL,
   LOAD_BILLS,
-  INSERT_WALLET
+  INSERT_WALLET,
+  APPLY_FILTER,
+  APPLY_TAGS
 } from '@/store/mutation-types'
+import _ from 'lodash'
 
 export const STATUS_LIST = {
   INITIAL: 'INTIAL',
@@ -16,13 +19,40 @@ export const STATUS_LIST = {
 }
 
 const state = {
-  items: [],
-  item: {},
-  wallets: [],
-  filters: [
-    {_id: 1, 'name': 'work', 'condition': ''},
-    {_id: 2, 'name': 'home', 'condition': ''}
-  ],
+  items: {},
+  itemsIds: [],
+  itemCurrent: '',
+  // wallet
+  wallets: {},
+  walletsIds: [],
+  // tags
+  tags: [],
+  tagsApply: [],
+  // filters
+  filters: {
+    '0001': {
+      _id: '0001',
+      name: 'uberuberuberuberuberuberuberuberuberuberuberuberuber',
+      conditions: {
+        description: {
+          value: 'uber',
+          operator: 'contains'
+        }
+      }
+    },
+    '0002': {
+      _id: '0002',
+      name: 'receitas',
+      conditions: {
+        value: {
+          value: '0',
+          operator: '>'
+        }
+      }
+    }
+  },
+  filtersIds: ['0001', '0002'],
+  filterApply: '',
   status: STATUS_LIST.INITIAL
 }
 
@@ -58,7 +88,11 @@ const mutations = {
   // },
 
   [INSERT_BILL] (state, item) {
-    state.items.push(item)
+    state.items[item._id] = item
+    state.itemsIds.push(item._id)
+    let wallet = state.wallets[item.resource._id]
+    wallet.total = wallet.total + item.value
+    state.tags = [...new Set([...state.tags, ...item.tags])]
     state.status = STATUS_LIST.NOT_SAVED
   },
 
@@ -73,18 +107,34 @@ const mutations = {
   [LOAD_BILLS] (state, fileContent) {
     if (fileContent) {
       let content = JSON.parse(fileContent)
-      state.items = [...state.items, ...content.items]
-      state.wallets = [...state.wallets, ...content.wallets]
-    } else {
-      state.items = []
-    }
+      state.items = content.items
+      state.itemsIds = content.itemsIds
 
+      state.wallets = content.wallets
+      state.walletsIds = content.walletsIds
+
+      state.filters = content.filters
+      state.filtersIds = content.filtersIds
+      state.filterApply = content.filterApply
+
+      state.tags = [...new Set([...state.tags, ...content.tags])]
+      state.tagsApply = content.tagsApply
+    }
     state.status = STATUS_LIST.LOADED
   },
 
   [INSERT_WALLET] (state, value) {
-    state.wallets.push(value)
+    state.walletsIds.push(value._id)
+    state.wallets[value._id] = value
     state.status = STATUS_LIST.NOT_SAVED
+  },
+
+  [APPLY_FILTER] (state, value) {
+    state.filterApply = _.clone(value, true)
+  },
+
+  [APPLY_TAGS] (state, value) {
+    state.tagsApply = _.clone(value, true)
   }
 }
 

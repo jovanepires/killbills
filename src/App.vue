@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <md-app @md-waterfall="true" md-mode="fixed">
+    <md-progress-bar v-if="loading" v-on:set-loading="loading = $event" class="md-accent" md-mode="indeterminate"></md-progress-bar>
+    <md-app v-if="!loading" :md-waterfall="true" :md-fixed="true">
       <md-app-toolbar class="md-dense md-primary" md-elevation="4">
         <div class="md-toolbar-row">
           <div class="md-toolbar-section-start">
@@ -34,29 +35,31 @@
               <md-avatar class="md-large"><img v-bind:src="userInfo.image" alt="me"></md-avatar>
           </div>
           <div class="md-toolbar-row md-layout md-alignment-center">
-              <div>{{ userInfo.email }}</div>
+              <span>{{ userInfo.email }}</span>
           </div>
         </md-toolbar>
         <menu-view></menu-view>
       </md-app-drawer>
-      <md-app-content class="md-layout md-gutter md-alignment-center">
+      <md-app-content class="">
         <!-- <md-content class="md-scrollbar md-layout md-gutter md-alignment-center"> -->
           <bills-view ref="bills"></bills-view>
+
         <!-- </md-content> -->
       </md-app-content>
     </md-app>
-
+    <speed-dial v-if="!loading"></speed-dial>
     <md-dialog ref="login" :md-active.sync="showLogin">
       <md-dialog-title>Login</md-dialog-title>
       <md-dialog-content>
-        <p>Please log in with your Google Drive account</p>
+        <p>{{ 'Please log in with your Google Drive account' | translate }}</p>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-primary" @click.native="handleAuthClick">Login</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <speed-dial></speed-dial>
+
     <create-new-file-dialog ref="create_new_file"></create-new-file-dialog>
+
   </div>
 </template>
 
@@ -149,6 +152,7 @@ export default {
       // if no file id in URL, open create dialog
       if (this.file) {
         return file.loadFromGDrive(this.file)
+          .then(() => { this.loading = false })
           .catch((error) => {
             this.errorMessage = error
             console.error(error)
@@ -159,6 +163,7 @@ export default {
       }
     },
     openCreateNewFile () {
+      this.loading = false
       this.$refs.create_new_file.openDialog()
     },
     tryAgain () {
@@ -171,7 +176,20 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "~vue-material/dist/theme/engine"; // Import the theme engine
+
+@include md-register-theme("default", (
+  primary: #700be2, // The primary color of your brand
+  accent: #9800e6, // The secondary color of your brand
+  theme: light // This can be dark or light
+));
+
+@import "~vue-material/dist/theme/all";
+
+  .text-right {
+    text-align: right;
+  }
   /* fix google picker conflict with vue-material */
   .picker-frame.picker-dialog-frame {
     height: 100% !important;

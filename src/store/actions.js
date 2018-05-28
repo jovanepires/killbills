@@ -92,12 +92,12 @@ export const loadFile = ({commit, state}, file) => {
   updateWindowUrl(state.file.metadata)
 }
 
-export const setCollaborators = ({commit, state}, collaborators) => {
-  commit(types.SET_COLLABORATORS, collaborators)
+export const applyFilter = ({commit, state}, filter) => {
+  commit(types.APPLY_FILTER, filter)
 }
 
-export const setCursors = ({commit, state}, cursors) => {
-  commit(types.SET_CURSORS, cursors)
+export const applyTags = ({commit, state}, tags) => {
+  commit(types.APPLY_TAGS, tags)
 }
 
 function updateWindowUrl (fileMetadata) {

@@ -30,7 +30,11 @@ export default {
   },
   methods: {
     sync () {
-      this.saveFile().then(() => { this.showDialog = true })
+      this.$emit('set-loading', true)
+      this.saveFile().then(() => {
+        this.$emit('set-loading', false)
+        this.showDialog = true
+      })
     },
     ...mapActions([
       'saveFile'

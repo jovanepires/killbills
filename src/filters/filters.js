@@ -2,7 +2,22 @@ import Vue from 'vue'
 
 const messages = {
   items: 'itens',
-  'Create new Wallet': 'Criar nova Carteira'
+  'Please log in with your Google Drive account': 'Por favor, faça login com sua conta do Google Drive',
+  'Create new Item': 'Criar novo Item',
+  'Value': 'Valor',
+  'Date': 'Data',
+  'Description': 'Descrição',
+  'Wallet': 'Carteira',
+  'Currency': 'Moeda',
+  'Notes': 'Observações',
+  'Create new Wallet': 'Criar nova Carteira',
+  'Name': 'Nome',
+  'Total': 'Total',
+  'Interval': 'Intervalo',
+  'No items found': 'Nenhum item encontrado',
+  // actions
+  'Cancel': 'Cancelar',
+  'Save': 'Salvar'
 }
 
 const currencyMap = {

@@ -11,24 +11,26 @@
 
     <md-content v-if="filters.length">
       <md-divider></md-divider>
-      <md-subheader>Filters</md-subheader>
-      <md-list-item v-for="filter in filters" :key="filter._id">
-        <md-icon>list</md-icon>
+      <md-subheader>
+        <span>Filters</span>
+      </md-subheader>
+      <md-list-item v-for="filter in filters" :key="filter._id" >
+        <md-icon>filter_list</md-icon>
         <span class="md-list-item-text">{{ filter.name }}</span>
+        <md-checkbox v-model="selectedFilter" :value="filter._id" v-on:change="applyFilter($event)" class="md-list-action"/>
       </md-list-item>
     </md-content>
 
-    <md-divider></md-divider>
-    <md-subheader>Tags</md-subheader>
+    <md-content v-if="tags.length">
+      <md-divider></md-divider>
+      <md-subheader>Tags</md-subheader>
+      <md-list-item v-for="tag in tags" :key="tag" >
+        <md-icon>label</md-icon>
+        <span class="md-list-item-text">{{ tag }}</span>
+        <md-checkbox v-model="selectedTags" :value="tag" v-on:change="setTags()" class="md-list-action"/>
+      </md-list-item>
+    </md-content>
 
-    <md-list-item>
-      <md-icon>label</md-icon>
-      <span class="md-list-item-text">Uber</span>
-    </md-list-item>
-    <md-list-item>
-      <md-icon>label</md-icon>
-      <span class="md-list-item-text">Food</span>
-    </md-list-item>
     <md-divider></md-divider>
     <md-list-item>
       <md-icon>build</md-icon>
@@ -44,29 +46,40 @@
 <!-- <script async defer src="https://apis.google.com/js/api.js"></script> -->
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Menu',
   data () {
     return {
-
+      selectedTags: [],
+      selectedFilter: ''
     }
   },
   mounted: function () {
 
   },
   created () {
-    // this.fetchData()
+    this.selectedTags = this.tagsApply
+    this.selectedFilter = this.filterApply
   },
   methods: {
-
+    setTags () {
+      this.applyTags(this.selectedTags)
+    },
+    ...mapActions([
+      'applyFilter',
+      'applyTags'
+    ])
   },
   computed: {
     ...mapState({
       items: state => state.bills.items,
-      wallets: state => state.bills.wallets,
-      filters: state => state.bills.filters
+      wallets: state => state.bills.walletsIds.map(id => state.bills.wallets[id]),
+      filters: state => state.bills.filtersIds.map(id => state.bills.filters[id]),
+      tags: state => state.bills.tags,
+      filterApply: state => state.bills.filterApply,
+      tagsApply: state => state.bills.tagsApply
     })
   }
 }

@@ -1,22 +1,23 @@
 <template>
+
     <md-dialog ref="new_item_dialog" :md-active.sync="showDialog" :md-click-outside-to-close="false" :md-close-on-esc="false" class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100">
-      <md-dialog-title>Create new item</md-dialog-title>
+      <md-dialog-title>{{ 'Create new Item' | translate }}</md-dialog-title>
       <md-dialog-content>
         <form novalidate @submit.stop.prevent="submit">
           <md-field>
             <md-icon>local_atm</md-icon>
-            <label>Valor</label>
-            <md-input v-model="value" type="number"></md-input>
+            <label>{{ 'Value' | translate }}</label>
+            <md-input v-model="value" type="number" class="text-right"></md-input>
           </md-field>
           <md-datepicker md-override-native="true" v-model="date" />
           <md-field>
             <md-icon>label_outline</md-icon>
-            <label>Descrição</label>
+            <label>{{ 'Description' | translate }}</label>
             <md-input v-model="item.description"></md-input>
           </md-field>
           <md-field>
             <md-icon>account_balance_wallet</md-icon>
-            <label>Conta</label>
+            <label>{{ 'Wallet' | translate }}</label>
             <md-select v-model="wallet" md-align-trigger>
               <md-option v-for="item in wallets" :value="item._id" :key="item._id">
                 {{item.name}}
@@ -25,24 +26,30 @@
           </md-field>
           <md-field>
             <md-icon>public</md-icon>
-            <label>Currency</label>
-            <md-select v-model="currency" md-align-trigger>
+            <label>{{ 'Currency' | translate }}</label>
+            <md-select v-model="currency" md-align-trigger disabled>
               <md-option value="BRL">BRL</md-option>
               <md-option value="USD">USD</md-option>
             </md-select>
           </md-field>
           <md-field>
             <md-icon>info_outline</md-icon>
-            <label>Observação</label>
+            <label>{{ 'Notes' | translate }}</label>
             <md-input v-model="item.note"></md-input>
           </md-field>
+          <md-chips class="md-primary" v-model="tags" md-placeholder="Add tag..." :md-format="formatTagName">
+            <md-icon>info_outline</md-icon>
+            <label>Tags</label>
+            <div class="md-helper-text">Add same tags</div>
+          </md-chips>
         </form>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click.native="showDialog = false">Cancel</md-button>
-        <md-button @click.native="inputItem()">Save</md-button>
+        <md-button class="md-raised" @click.native="showDialog = false">{{ 'Cancel' | translate }}</md-button>
+        <md-button class="md-raised md-primary" @click.native="inputItem()">{{ 'Save' | translate }}</md-button>
       </md-dialog-actions>
     </md-dialog>
+
 </template>
 
 <script>
@@ -61,7 +68,8 @@ export default {
       wallet: null,
       value: null,
       currency: 'BRL',
-      showDialog: false
+      showDialog: false,
+      tags: []
     }
   },
   mounted: function () {
@@ -77,16 +85,21 @@ export default {
     inputItem () {
       this.item._id = uuidv4()
       this.item.due = this.date.toJSON()
-      this.item.resource = _.clone(this.wallets.find(x => x._id === this.wallet))
+      this.item.resource = _.clone(this.wallets[this.wallet])
       this.item.value = parseFloat(this.value) * this.valuetype
       this.item.currency = this.currency
+      this.item.tags = _.clone(this.tags, true)
       this.insertItem(_.clone(this.item, true))
       this.saveFile()
       this.showDialog = false
+      this.$emit('set-loading', false)
     },
     openDialog () {
       this.item = _.clone(defaultBill())
       this.showDialog = true
+    },
+    formatTagName (str) {
+      return str.replace(/[^\w\s]/gi, '').toLowerCase()
     },
     ...mapActions([
       'insertItem',

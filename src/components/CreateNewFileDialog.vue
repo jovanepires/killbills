@@ -38,7 +38,10 @@ export default {
     },
     openFromGDrive () {
       file.openFromGDrive()
-        .then(() => { this.showDialog = false })
+        .then(() => {
+          this.showDialog = false
+          this.$emit('set-loading', false)
+        })
         .catch((er) => {
           console.info('Canceled gapi picker.')
           console.info(er)

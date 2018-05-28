@@ -5,17 +5,17 @@
         <form novalidate @submit.stop.prevent="submit">
           <md-field>
             <md-icon>account_balance_wallet</md-icon>
-            <label>Name</label>
+            <label>{{ 'Name' | translate }}</label>
             <md-input v-model="name"></md-input>
           </md-field>
           <md-field>
             <md-icon>local_atm</md-icon>
-            <label>Total</label>
+            <label>{{ 'Total' | translate }}</label>
             <md-input v-model="total" type="number"></md-input>
           </md-field>
           <md-field>
             <md-icon>public</md-icon>
-            <label>Currency</label>
+            <label>{{ 'Currency' | translate }}</label>
             <md-select v-model="currency" md-align-trigger>
               <md-option value="BRL">BRL</md-option>
               <md-option value="USD">USD</md-option>
@@ -24,14 +24,14 @@
           <md-datepicker md-override-native="true" v-model="expires" />
           <md-field>
             <md-icon>autorenew</md-icon>
-            <label>Interval</label>
+            <label>{{ 'Interval' | translate }}</label>
             <md-input v-model="interval" type="number"></md-input>
           </md-field>
         </form>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click.native="showDialog = false">Cancel</md-button>
-        <md-button @click.native="saveWallet()">Save</md-button>
+        <md-button class="md-raised" @click.native="showDialog = false">{{ 'Cancel' | translate }}</md-button>
+        <md-button class="md-raised md-primary" @click.native="saveWallet()">{{ 'Save' | translate }}</md-button>
       </md-dialog-actions>
     </md-dialog>
 </template>
@@ -50,7 +50,7 @@ export default {
       expires: null,
       total: 0,
       currency: 'BRL',
-      interval: 0,
+      interval: null,
       showDialog: false
     }
   },
@@ -68,7 +68,7 @@ export default {
         total: parseFloat(this.total),
         currency: this.currency,
         expires: this.expires.toJSON(),
-        interval: parseInt(this.interval, 10)
+        interval: parseInt((this.interval || 0), 10)
       }
 
       this.insertWallet(wallet)

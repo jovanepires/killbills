@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <md-content>
     <md-speed-dial class="md-bottom-right md-fixed" md-direction="top" md-event="hover">
       <md-speed-dial-target>
         <md-icon class="md-morph-initial">add</md-icon>
@@ -16,9 +16,9 @@
           <md-icon>remove</md-icon>
         </md-button>
         <!-- ADD FILTER -->
-        <md-button class="md-icon-button" @click="openCreateNewFile()">
+        <!-- <md-button class="md-icon-button" @click="openCreateNewFile()">
           <md-icon>filter_list</md-icon>
-        </md-button>
+        </md-button> -->
         <!-- ADD WALLET -->
         <md-button class="md-icon-button" @click="openCreateNewWallet()">
           <md-icon>account_balance_wallet</md-icon>
@@ -28,7 +28,7 @@
     <create-new-item-dialog ref="new_item_dialog" v-bind:valuetype="newvaluetype"></create-new-item-dialog>
     <create-new-filter-dialog ref="new_filter_dialog"></create-new-filter-dialog>
     <create-new-wallet-dialog ref="new_wallet_dialog"></create-new-wallet-dialog>
-  </div>
+  </md-content>
 </template>
 
 <script>
@@ -71,8 +71,3 @@ export default {
   }
 }
 </script>
-<style>
-  /*body { padding-bottom: 70px; }*/
-
-
-</style>
