@@ -60,7 +60,7 @@ export default {
 
   },
   created () {
-    this.selectedTags = this.tagsApply
+    this.selectedTags = [...this.tagsApply]
     this.selectedFilter = this.filterApply
   },
   methods: {

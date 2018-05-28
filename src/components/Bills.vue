@@ -93,15 +93,16 @@ export default {
   computed: {
     ...mapState({
       items: state => state.bills.itemsIds.map(id => state.bills.items[id]),
-      filter: state => state.bills.filters[state.bills.filterApply]
+      filter: state => state.bills.filters[state.bills.filterApply],
+      tags: state => state.bills.tagsApply
     }),
     allItems: function () {
       // this.items = getBills(this.fileContent || '{}')
       let self = this
       return this.items.filter(function (item) {
-        if (self.filter) {
-          let filtered = true
+        let filtered = true
 
+        if (self.filter) {
           Object.keys(item).forEach(prop => {
             let contidion = self.filter.conditions[prop]
 
@@ -117,11 +118,17 @@ export default {
               filtered = filtered && item[prop].toString().toLowerCase().includes(contidion.value.toLowerCase())
             }
           })
-
-          return filtered
         }
 
-        return true
+        if (self.tags && self.tags.length) {
+          if (item.tags && item.tags.length) {
+            filtered = filtered && item.tags.some(t => self.tags.indexOf(t) !== -1)
+          } else {
+            filtered = false
+          }
+        }
+
+        return filtered
       })
     },
     negativeItems: function () {
