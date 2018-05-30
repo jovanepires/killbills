@@ -1,6 +1,6 @@
 <template>
-    <md-dialog ref="new_item_dialog" :md-active.sync="showDialog" :md-click-outside-to-close="false" :md-close-on-esc="false">
-      <md-dialog-title>Create new item</md-dialog-title>
+    <md-dialog ref="new_item_dialog" :md-active.sync="showDialog" :md-click-outside-to-close="false" :md-close-on-esc="false" class="md-layout-item md-size-50 md-small-size-100 md-xsmall-size-100">
+      <md-dialog-title>Create new Filter</md-dialog-title>
       <md-dialog-content >
 
         <form novalidate @submit.stop.prevent="submit">
@@ -32,7 +32,7 @@
         </form>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click.native="showDialog = false">Cancel</md-button>
+        <md-button class="md-primary" @click.native="showCreateFilter(false)">Cancel</md-button>
         <md-button @click.native="inputItem()">Save</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -53,8 +53,7 @@ export default {
       item: null,
       date: new Date(),
       wallet: null,
-      value: null,
-      showDialog: false
+      value: null
     }
   },
   mounted: function () {
@@ -74,21 +73,23 @@ export default {
       this.item.value = parseFloat(this.value) * this.valuetype
       this.insertItem(_.clone(this.item, true))
       this.saveFile()
-      this.showDialog = false
+      this.showCreateFilter(false)
     },
     openDialog () {
       this.item = _.clone(defaultBill())
-      this.showDialog = true
+      this.showCreateFilter(true)
     },
     ...mapActions([
       'insertItem',
-      'saveFile'
+      'saveFile',
+      'showCreateFilter'
     ])
   },
   computed: {
     ...mapState({
       items: state => state.bills.items,
-      wallets: state => state.bills.wallets
+      wallets: state => state.bills.wallets,
+      showDialog: state => state.events.showCreateFilter
     }),
     activeClass: function () {
       return this.item.value >= 0 ? 'positive' : 'negative'

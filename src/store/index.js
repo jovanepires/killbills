@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import file from '@/store/modules/file'
 import bills from '@/store/modules/bills'
+import events from '@/store/modules/events'
 import collaborators from '@/store/modules/collaborators'
 import * as actions from '@/store/actions'
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
   modules: {
     file,
     bills,
+    events,
     collaborators
   },
   strict: debug

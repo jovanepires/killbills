@@ -102,6 +102,7 @@ export default {
       return this.items.filter(function (item) {
         let filtered = true
 
+        // -- filters
         if (self.filter) {
           Object.keys(item).forEach(prop => {
             let contidion = self.filter.conditions[prop]
@@ -120,6 +121,7 @@ export default {
           })
         }
 
+        // -- tags
         if (self.tags && self.tags.length) {
           if (item.tags && item.tags.length) {
             filtered = filtered && item.tags.some(t => self.tags.indexOf(t) !== -1)

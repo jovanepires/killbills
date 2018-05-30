@@ -20,28 +20,22 @@
           <md-icon>filter_list</md-icon>
         </md-button> -->
         <!-- ADD WALLET -->
-        <md-button class="md-icon-button" @click="openCreateNewWallet()">
+        <!-- <md-button class="md-icon-button" @click="openCreateNewWallet()">
           <md-icon>account_balance_wallet</md-icon>
-        </md-button>
+        </md-button> -->
       </md-speed-dial-content>
     </md-speed-dial>
     <create-new-item-dialog ref="new_item_dialog" v-bind:valuetype="newvaluetype"></create-new-item-dialog>
-    <create-new-filter-dialog ref="new_filter_dialog"></create-new-filter-dialog>
-    <create-new-wallet-dialog ref="new_wallet_dialog"></create-new-wallet-dialog>
   </md-content>
 </template>
 
 <script>
 import CreateNewItemDialog from '@/components/CreateNewItemDialog'
-import CreateNewFilterDialog from '@/components/CreateNewFilterDialog'
-import CreateNewWalletDialog from '@/components/CreateNewWalletDialog'
 
 export default {
   name: 'SpeedDial',
   components: {
-    'create-new-item-dialog': CreateNewItemDialog,
-    'create-new-filter-dialog': CreateNewFilterDialog,
-    'create-new-wallet-dialog': CreateNewWalletDialog
+    'create-new-item-dialog': CreateNewItemDialog
   },
   data () {
     return {
@@ -58,12 +52,6 @@ export default {
     openCreateNewItem (valuetype) {
       this.newvaluetype = valuetype
       this.$refs.new_item_dialog.openDialog()
-    },
-    openCreateNewFilter () {
-      this.$refs.new_filter_dialog.openDialog()
-    },
-    openCreateNewWallet () {
-      this.$refs.new_wallet_dialog.openDialog()
     }
   },
   computed: {

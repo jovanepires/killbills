@@ -100,6 +100,14 @@ export const applyTags = ({commit, state}, tags) => {
   commit(types.APPLY_TAGS, tags)
 }
 
+export const showCreateWallet = ({commit, state}, value) => {
+  commit(types.SHOW_CREATE_WALLET, value)
+}
+
+export const showCreateFilter = ({commit, state}, value) => {
+  commit(types.SHOW_CREATE_FILTER, value)
+}
+
 function updateWindowUrl (fileMetadata) {
   let queryVars = qs.parse(window.location.search)
   queryVars.file = fileMetadata.id

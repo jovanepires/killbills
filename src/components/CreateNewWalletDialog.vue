@@ -30,7 +30,7 @@
         </form>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-raised" @click.native="showDialog = false">{{ 'Cancel' | translate }}</md-button>
+        <md-button class="md-raised" @click.native="showCreateWallet(false)">{{ 'Cancel' | translate }}</md-button>
         <md-button class="md-raised md-primary" @click.native="saveWallet()">{{ 'Save' | translate }}</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -50,8 +50,8 @@ export default {
       expires: null,
       total: 0,
       currency: 'BRL',
-      interval: null,
-      showDialog: false
+      interval: null
+      // showDialog: false
     }
   },
   mounted: function () {
@@ -73,20 +73,21 @@ export default {
 
       this.insertWallet(wallet)
       this.saveFile()
-      this.showDialog = false
+      this.showCreateWallet(false)
     },
     openDialog () {
-      this.showDialog = true
+      this.showCreateWallet(true)
     },
     ...mapActions([
       'insertWallet',
-      'saveFile'
+      'saveFile',
+      'showCreateWallet'
     ])
   },
   computed: {
     ...mapState({
-      items: state => state.bills.items,
-      wallets: state => state.bills.wallets
+      wallets: state => state.bills.wallets,
+      showDialog: state => state.events.showCreateWallet
     })
   }
 }

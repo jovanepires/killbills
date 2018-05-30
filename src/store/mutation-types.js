@@ -25,3 +25,7 @@ export const APPLY_TAGS = 'APPLY_TAGS'
 
 // wallets mutations
 export const INSERT_WALLET = 'INSERT_WALLET'
+
+// events
+export const SHOW_CREATE_WALLET = 'SHOW_CREATE_WALLET'
+export const SHOW_CREATE_FILTER = 'SHOW_CREATE_FILTER'
