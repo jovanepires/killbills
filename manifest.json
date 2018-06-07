@@ -1,0 +1,16 @@
+{
+    "dir": "ltr",
+    "lang": "de",
+    "name": "PayOut - Gerenriados Financeiro",
+    "scope": "/payout/",
+    "display": "fullscreen",
+    "start_url": "https://payoutapp.github.io/payout/",
+    "short_name": "PayOut",
+    "theme_color": "transparent",
+    "description": "Gerenciador Financeiro",
+    "orientation": "any",
+    "background_color": "transparent",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": []
+}
