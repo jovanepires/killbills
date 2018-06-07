@@ -32,7 +32,7 @@ const state = {
   filters: {
     '0001': {
       _id: '0001',
-      name: 'uberuberuberuberuberuberuberuberuberuberuberuberuber',
+      name: 'uber',
       conditions: {
         description: {
           value: 'uber',

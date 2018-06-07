@@ -1,34 +1,34 @@
 <template>
   <md-content>
     <md-list>
-      <md-content v-if="wallets.length">
-        <md-subheader>Wallets</md-subheader>
-        <md-list-item v-for="wallet in wallets" :key="wallet._id">
-          <md-icon>account_balance_wallet</md-icon>
-          <span class="md-list-item-text">{{ wallet.name }}</span>
-          <span class="md-list-action">{{ wallet.total | currency(wallet.currency) }}</span>
-        </md-list-item>
-        <md-list-item @click="showCreateWalletDialog()">
-          <md-icon>add</md-icon>
-          <span class="md-list-item-text">{{ 'Add Wallet' | translate }}</span>
-        </md-list-item>
-      </md-content>
+      <!-- WALLETS -->
+      <md-subheader>Wallets</md-subheader>
+      <md-list-item v-for="wallet in wallets" :key="wallet._id">
+        <md-icon>account_balance_wallet</md-icon>
+        <span class="md-list-item-text">{{ wallet.name }}</span>
+        <span class="md-list-action">{{ wallet.total | currency(wallet.currency) }}</span>
+      </md-list-item>
+      <md-list-item @click="showCreateWalletDialog()">
+        <md-icon>add</md-icon>
+        <span class="md-list-item-text">{{ 'Add Wallet' | translate }}</span>
+      </md-list-item>
+      <!-- WALLETS -->
 
-      <md-content v-if="filters.length">
-        <md-divider></md-divider>
-        <md-subheader>
-          <span>Filters</span>
-        </md-subheader>
-        <md-list-item v-for="filter in filters" :key="filter._id" >
-          <md-icon>filter_list</md-icon>
-          <span class="md-list-item-text">{{ filter.name }}</span>
-          <md-checkbox v-model="selectedFilter" :value="filter._id" v-on:change="applyFilter($event)" class="md-list-action"/>
-        </md-list-item>
-        <md-list-item @click="showCreateFilterDialog()">
-          <md-icon>add</md-icon>
-          <span class="md-list-item-text">{{ 'Add Filter' | translate }}</span>
-        </md-list-item>
-      </md-content>
+      <!-- FILTERS -->
+      <md-divider></md-divider>
+      <md-subheader>
+        <span>Filters</span>
+      </md-subheader>
+      <md-list-item v-for="filter in filters" :key="filter._id" >
+        <md-icon>filter_list</md-icon>
+        <span class="md-list-item-text">{{ filter.name }}</span>
+        <md-checkbox v-model="selectedFilter" :value="filter._id" v-on:change="applyFilter($event)" class="md-list-action"/>
+      </md-list-item>
+      <md-list-item @click="showCreateFilterDialog()">
+        <md-icon>add</md-icon>
+        <span class="md-list-item-text">{{ 'Add Filter' | translate }}</span>
+      </md-list-item>
+      <!-- FILTERS -->
 
       <md-content v-if="tags.length">
         <md-divider></md-divider>

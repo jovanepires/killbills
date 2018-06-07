@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <md-progress-bar v-if="loading" v-on:set-loading="loading = $event" class="md-accent" md-mode="indeterminate"></md-progress-bar>
-    <md-app v-if="!loading" :md-waterfall="true" :md-fixed="true" v-on:show-create-new-wallet-dialog="openCreateNewWallet()">
-      <md-app-toolbar class="md-dense md-primary" md-elevation="4">
+    <md-app v-if="!loading" v-on:show-create-new-wallet-dialog="openCreateNewWallet()">
+      <md-app-toolbar class="md-primary" md-elevation="4">
         <div class="md-toolbar-row">
           <div class="md-toolbar-section-start">
             <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">

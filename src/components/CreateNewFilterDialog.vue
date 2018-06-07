@@ -9,11 +9,15 @@
             <label>{{ 'Name' | translate }}</label>
             <md-input v-model="name"></md-input>
           </md-field>
-          <md-datepicker v-model="date"/>
+          <md-divider></md-divider>
+
           <md-field>
-            <md-icon>label_outline</md-icon>
             <label>{{ 'Description' | translate }}</label>
             <md-input v-model="item.description"></md-input>
+            <md-select v-model="currency" md-align-trigger>
+              <md-option value="BRL">BRL</md-option>
+              <md-option value="USD">USD</md-option>
+            </md-select>
           </md-field>
           <md-field>
             <md-icon>account_balance_wallet</md-icon>
