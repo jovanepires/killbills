@@ -8,14 +8,14 @@
         <span class="md-list-item-text">{{ wallet.name }}</span>
         <span class="md-list-action">{{ wallet.total | currency(wallet.currency) }}</span>
       </md-list-item>
-      <md-list-item @click="showCreateWalletDialog()">
+      <!-- <md-list-item @click="showCreateWalletDialog()">
         <md-icon>add</md-icon>
         <span class="md-list-item-text">{{ 'Add Wallet' | translate }}</span>
-      </md-list-item>
+      </md-list-item> -->
       <!-- WALLETS -->
 
       <!-- FILTERS -->
-      <md-divider></md-divider>
+      <!-- <md-divider></md-divider>
       <md-subheader>
         <span>Filters</span>
       </md-subheader>
@@ -27,7 +27,7 @@
       <md-list-item @click="showCreateFilterDialog()">
         <md-icon>add</md-icon>
         <span class="md-list-item-text">{{ 'Add Filter' | translate }}</span>
-      </md-list-item>
+      </md-list-item> -->
       <!-- FILTERS -->
 
       <md-content v-if="tags.length">
@@ -67,7 +67,8 @@ export default {
     }
   },
   mounted: function () {
-
+    // console.log(this.status)
+    // this.wallets.length === 0 && this.showCreateWalletDialog()
   },
   created () {
     this.selectedTags = [...this.tagsApply]
@@ -98,8 +99,15 @@ export default {
       filters: state => state.bills.filtersIds.map(id => state.bills.filters[id]),
       tags: state => state.bills.tags,
       filterApply: state => state.bills.filterApply,
-      tagsApply: state => state.bills.tagsApply
+      tagsApply: state => state.bills.tagsApply,
+      status: state => state.bills.status
     })
+  },
+  watch: {
+    status (newStatus, oldStatus) {
+      // console.log(newStatus)
+      newStatus === 'LOADED' && this.wallets.length === 0 && this.showCreateWalletDialog()
+    }
   }
 }
 </script>
